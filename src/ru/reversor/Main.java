@@ -2,6 +2,7 @@ package ru.reversor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -13,40 +14,40 @@ public class Main {
         final int MAX = 500_000_000;
         List<Integer> soMuchIntegers = new Random().ints(SIZE, MIN, MAX).boxed().collect(Collectors.toList());
 
-        List<Integer> minimumsIndexes;
-        List<Integer> maximumsIndexes;
-        final List<Integer> minimums = new ArrayList<>();
-        final List<Integer> maximums = new ArrayList<>();
+        Map<Integer, Integer> minimums;
+        Map<Integer, Integer> maximums;
+        final List<Integer> minValues = new ArrayList<>();
+        final List<Integer> maxValues = new ArrayList<>();
         soMuchIntegers.forEach(el -> {
-            if (minimums.isEmpty()) {
-                minimums.add(el);
-                maximums.add(el);
+            if (minValues.size() < 5) {
+                minValues.add(el);
+                maxValues.add(el);
                 return;
             }
-            for (int i = 0; i < minimums.size(); i++) {
-                if (el < minimums.get(i)) {
-                    minimums.add(i, el);
+            for (int i = 0; i < minValues.size(); i++) {
+                if (el < minValues.get(i)) {
+                    minValues.add(i, el);
                     break;
                 }
             }
-            for (int i = 0; i < maximums.size(); i++) {
-                if (el > maximums.get(i)) {
-                    maximums.add(i, el);
+            for (int i = 0; i < maxValues.size(); i++) {
+                if (el > maxValues.get(i)) {
+                    maxValues.add(i, el);
                     break;
                 }
             }
-            if (minimums.size() > 5) {
-                minimums.remove(minimums.size() - 1);
+            if (minValues.size() > 5) {
+                minValues.remove(minValues.size() - 1);
             }
-            if (maximums.size() > 5) {
-                maximums.remove(maximums.size() - 1);
+            if (maxValues.size() > 5) {
+                maxValues.remove(maxValues.size() - 1);
 
             }
         });
-        minimumsIndexes = minimums.stream().map(soMuchIntegers::indexOf).collect(Collectors.toList());
-        maximumsIndexes = maximums.stream().map(soMuchIntegers::indexOf).collect(Collectors.toList());
-        System.out.printf("Позиции 5 наименьших: %s\n", minimumsIndexes);
-        System.out.printf("Позиции 5 наибольших: %s\n", maximumsIndexes);
+        minimums = minValues.stream().collect(Collectors.toMap(soMuchIntegers::indexOf, el -> el));
+        maximums = maxValues.stream().collect(Collectors.toMap(soMuchIntegers::indexOf, el -> el));
+        System.out.printf("5 наименьших: %s\n", minimums);
+        System.out.printf("5 наибольших: %s\n", maximums);
     }
 
 }
